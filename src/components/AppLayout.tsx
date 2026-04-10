@@ -4,6 +4,7 @@ import { Bell, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -11,6 +12,9 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children, title }: AppLayoutProps) {
+  const { profile, user } = useAuth();
+  const initials = (profile?.display_name || user?.email || "?").split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -26,10 +30,9 @@ export function AppLayout({ children, title }: AppLayoutProps) {
             </div>
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-4 w-4" />
-              <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-primary rounded-full" />
             </Button>
             <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-primary text-primary-foreground text-xs">JD</AvatarFallback>
+              <AvatarFallback className="bg-primary text-primary-foreground text-xs">{initials}</AvatarFallback>
             </Avatar>
           </header>
           <main className="flex-1 overflow-auto p-6 bg-background">

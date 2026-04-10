@@ -1,15 +1,16 @@
 import {
   LayoutDashboard, Users, UserPlus, Kanban, CalendarDays,
-  Activity, UsersRound, BarChart3, Wrench, Settings, UserCircle, LogOut,
+  Activity, UsersRound, BarChart3, Wrench, Settings, UserCircle, LogOut, ShieldCheck,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
   SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/contexts/AuthContext";
 
 const mainNav = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -24,6 +25,7 @@ const mainNav = [
 ];
 
 const bottomNav = [
+  { title: "Admin", url: "/admin", icon: ShieldCheck },
   { title: "Settings", url: "/settings", icon: Settings },
   { title: "Profile", url: "/profile", icon: UserCircle },
 ];
@@ -31,7 +33,13 @@ const bottomNav = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -84,7 +92,7 @@ export function AppSidebar() {
             </SidebarMenuItem>
           ))}
           <SidebarMenuItem>
-            <SidebarMenuButton className="hover:bg-sidebar-accent/50 text-muted-foreground">
+            <SidebarMenuButton className="hover:bg-sidebar-accent/50 text-muted-foreground cursor-pointer" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />
               {!collapsed && <span>Logout</span>}
             </SidebarMenuButton>
